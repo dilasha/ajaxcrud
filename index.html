@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+    <style>
+        .grey div{font-size: 90%; font-family: monospace;border: 1px solid #d0d0d0;border-radius: 3px; background: #efefef; padding: 1rem;margin-bottom:2rem; }
+    </style>
+    <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+</head>
+<body class="container">
+    <h3>CRUD Sample</h3>
+    <div class="row">
+        <div class="six columns">
+            <input type="text" id="name" placeholder="Name" /><br>
+            <input type="text" id="age" placeholder="Age" /><br>
+            <input type="text" id="country" placeholder="Country" /><br>
+            <input type="button" value="Submit" id="post" class="button-primary"/>
+            <input type="button" value="Update" id="update"/>
+            <br>
+            <br>
+            <input type="button" value="Get" id="get" class="button-primary"/>
+            <input type="button" value="Delete" id="delete" class="button-primary"/>
+        </div>
+        <div class="six columns grey">
+            <h5>Request</h5>
+            <div class="request">
+    
+            </div>
+            <h5>Response</h5>
+            <div class="response">
+
+            </div>
+            <h5>Data</h5>
+            <div class="data">
+
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function(){
+            function ajaxGet(){
+                var request = {
+                    url: 'https://httpbin.org/get',
+                    method: 'get',
+                    contentType: 'application/json',
+                    dataType: 'json'
+                };
+                $('.request').text(JSON.stringify(request));
+                $.ajax(request).done(function(result){
+                    $('.response').text(JSON.stringify(result));
+                    $('.data').text(JSON.stringify(result.args));
+                });
+            }
+            function ajaxPost(toPost){
+                var request = {
+                    url: 'https://httpbin.org/post',
+                    method: 'post',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: toPost
+                }
+                $('.request').text(JSON.stringify(request));
+                $.ajax(request).done(function(result){
+                    $('.response').text(JSON.stringify(result));
+                    $('.data').text(JSON.stringify(result.data));
+                });
+            }
+            function ajaxPut(id, toPut){
+                var request = {
+                    // url: 'https://httpbin.org/put/' + id,
+                    url: 'https://httpbin.org/put',
+                    method: 'put',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: toPut
+                }
+                $('.request').text(JSON.stringify(request));
+                $.ajax(request).done(function(result){
+                    $('.response').text(JSON.stringify(result));
+                    $('.data').text(JSON.stringify(result.data));
+                });
+            }
+            function ajaxDelete(id){
+                var request = {
+                    // url: 'https://httpbin.org/delete/' + id,
+                    url: 'https://httpbin.org/delete',
+                    method: 'delete',
+                }
+                $('.request').text(JSON.stringify(request));
+                $.ajax(request).done(function(result){
+                    $('.response').text(JSON.stringify(result));
+                    $('.data').text(JSON.stringify(result.data));
+                });
+            }
+
+            $('#post').on('click',function(){
+                //adding data entered in the form into the database as a new record
+                var toPost = {
+                    name: $('#name').val(),
+                    canVote: ($('#age').val() > 18),
+                    country: $('#country').val(),
+                }
+                ajaxPost(toPost);
+            });
+            $('#get').on('click',function(){
+                //getting all records from the database
+                ajaxGet();
+            });
+            $('#update').on('click',function(){
+                var toPut = {
+                    country: $('#country').val().toUpperCase(),
+                }
+                //assuming the record we are updating has a voteId of 1
+                ajaxPut(1, toPut);
+            });
+            $('#delete').on('click',function(){
+                //assuming the record we are deleting has a voteId of 1
+                ajaxDelete(1);
+            });
+        });
+    </script>
+</body>
+</html>
